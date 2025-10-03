@@ -68,8 +68,6 @@ def atualizar_disponibilidade(id_livros):
         if conexao:
             conexao.close()
 
-livro_id = input("Digite o id do livro: ")
-atualizar_disponibilidade(livro_id)
 
 def remover_livro(id_livro):
     try:
@@ -89,27 +87,30 @@ def remover_livro(id_livro):
         if conexao:
             conexao.close()
 
-remover = int(input("Digite o ID do livro que deseja remover: "))
+def menu():
+    print("*"* 40)
+    print("Menu - Biblioteca")
+    print("*"* 40)
+    print("1 - Cadastrar livro")
+    print("2 - Listar livros")
+    print("3 - Atualizar disponibilidade")
+    print("4 - Remover livro")
+    print("5 - Sair")
+    opcao = int(input("Escola uma opção: "))
 
-print("*"* 40)
-print("Menu - Biblioteca")
-print("*"* 40)
-print("1 - Cadastrar livro")
-print("2 - Listar livros")
-print("3 - Atualizar disponibilidade")
-print("4 - Remover livro")
-print("5 - Sair")
-opcao = int(input("Escola uma opção: "))
+    while True:
+        if opcao == 1:
+            adicionar_livro("titulo","autor","ano")
+        elif opcao == 2:
+            listar_livros()
+        elif opcao == 3:
+            livro_id = input("Digite o id do livro: ")
+            atualizar_disponibilidade(livro_id)
+        elif opcao == 4:
+            remover = int(input("Digite o ID do livro que deseja remover: "))
+            remover_livro(remover)
+        elif opcao == 5:
+            print("Saindo do sistema. . .")
+            break
 
-while True:
-    if opcao == 1:
-        adicionar_livro("titulo","autor","ano")
-    elif opcao == 2:
-        listar_livros()
-    elif opcao == 3:
-        atualizar_disponibilidade(livro_id)
-    elif opcao == 4:
-        remover_livro(remover)
-    elif opcao == 5:
-        print("Saindo do sistema. . .")
-        break
+menu()
