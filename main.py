@@ -100,3 +100,26 @@ def remover_livro(id_livro):
             conexao.close()
 
 remover = int(input("Digite o ID do livro que deseja remover: "))
+
+
+print("*"* 40)
+print("Menu - Biblioteca")
+print("*"* 40)
+print("1 - Cadastrar livro")
+print("2 - Listar livros")
+print("3 - Atualizar disponibilidade")
+print("4 - Remover livro")
+print("5 - Sair")
+opcao = int(input("Escola uma opção: "))
+while True:
+    if opcao == 1:
+        adicionar_livro()
+    elif opcao == 2:
+        listar_livros()
+    elif opcao == 3:
+        atualizar_disponibilidade()
+    elif opcao == 4:
+        remover_livro()
+    elif opcao == 5:
+        print("Saindo do sistema. . .")
+        break
