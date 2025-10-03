@@ -4,7 +4,7 @@ conexao = sqlite3.connect("biblioteca.db")
 cursor = conexao.cursor()
 
 cursor.execute("""
-CREATE TABLE IF NOT EXISTs livros (
+CREATE TABLE IF NOT EXISTS livros (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     título TEXT NOT NULL,
     autor TEXT NOT NULL,
@@ -18,23 +18,19 @@ def adicionar_livro(titulo, autor, ano):
     try:
         conexao = sqlite3.connect("biblioteca.db")
         cursor = conexao.cursor()
-        titulo = input("Digite o nome do livro: ")
-        autor = input("Digite o nome do autor: ")
+        titulo = input("Digite o titulo do livro: ").lower()
+        autor = input("Digite o nome do autor: ").lower()
         ano = int(input("Digite o ano que o livro foi lançado: "))
+
         cursor.execute("""
-        INSERT INTO livros (titulo, autor, ano)
-        VALUES (?, ?, ?, ?)
+            INSERT INTO livros (título, autor, ano, disponivel)
+            VALUES (?, ?, ?, ?)
         """,
         (titulo, autor, ano, "sim")
         )
         conexao.commit()
-        if cursor.rowcount > 0:
-            print("Livro adicionado com sucesso")
-        else:
-            print("O livro não pode ser adicionado")
-
     except Exception as erro:
-        print(f"erro ao tentar adicionar um livro {erro}")
+        print(f"erro ao tentar adicionar o livro {erro}")
     finally:
         if conexao:
             conexao.close()
@@ -53,33 +49,27 @@ def listar_livros():
         if conexao:
             conexao.close()
 
-def atualizar_disponibilidade():
-    conexao = sqlite3.connect("biblioteca.db")
-    cursor = conexao.cursor()
-    try:
-        id = int(input("Digite o ID do livro que deseja ver: "))
-    except ValueError:
-        print("erro ao procurar o ID do livro")
-        return
 
+def atualizar_disponibilidade(id_livros):
     try:
-        cursor.execute("""
-        UPDATE livros
-        SET disponivel = CASE disponivel
-        WHEN "sim" THEN "não"
-        WHEN "não" THEN "sim"
-        Else "sim"
-        END 
-        WHERE id = ?
-       """,
-       (id,)
-       )
+        cursor = conexao.cursor()
+        cursor.execute("SELECT disponivel FROM livros WHERE id = ?", (id_livros,))
+        resultado = cursor.fetchone()
+        if resultado[0] == "sim":
+            novo_status = "não"
+        else:
+            novo_status = "sim"
+
+        cursor.execute("UPDATE livros SET disponivel = ? WHERE id = ?", (novo_status, id_livros))
         conexao.commit()
     except Exception as erro:
-        print(f"Ocorreu um erro ao atualizar o livro {erro}")
+        print(f"Ocorreu um erro {erro}")
     finally:
         if conexao:
             conexao.close()
+
+livro_id = input("Digite o id do livro: ")
+atualizar_disponibilidade(livro_id)
 
 def remover_livro(id_livro):
     try:
@@ -101,7 +91,6 @@ def remover_livro(id_livro):
 
 remover = int(input("Digite o ID do livro que deseja remover: "))
 
-
 print("*"* 40)
 print("Menu - Biblioteca")
 print("*"* 40)
@@ -111,15 +100,16 @@ print("3 - Atualizar disponibilidade")
 print("4 - Remover livro")
 print("5 - Sair")
 opcao = int(input("Escola uma opção: "))
+
 while True:
     if opcao == 1:
-        adicionar_livro()
+        adicionar_livro("titulo","autor","ano")
     elif opcao == 2:
         listar_livros()
     elif opcao == 3:
-        atualizar_disponibilidade()
+        atualizar_disponibilidade(livro_id)
     elif opcao == 4:
-        remover_livro()
+        remover_livro(remover)
     elif opcao == 5:
         print("Saindo do sistema. . .")
         break
