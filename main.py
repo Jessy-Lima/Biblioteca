@@ -18,7 +18,9 @@ def adicionar_livro(titulo, autor, ano):
     try:
         conexao = sqlite3.connect("biblioteca.db")
         cursor = conexao.cursor()
-
+        titulo = input("Digite o nome do livro: ")
+        autor = input("Digite o nome do autor: ")
+        ano = int(input("Digite o ano que o livro foi lançado: "))
         cursor.execute("""
         INSERT INTO livros (titulo, autor, ano)
         VALUES (?, ?, ?, ?)
@@ -46,8 +48,35 @@ def listar_livros():
         for linha in cursor.fetchall():
             print(f"ID {linha[0]} | TÍTULO: {linha[1]} | AUTOR: {linha[2]} | ANO: {linha[3]} | DISPONIBILIDADE {linha[4]}")
     except Exception as erro:
-        print(f"Erro ao tentar listar os livros da  {erro}")
+        print(f"Erro ao tentar listar os livros{erro}")
     finally:
         if conexao:
             conexao.close()
 
+def atualizar_disponibilidade():
+    conexao = sqlite3.connect("biblioteca.db")
+    cursor = conexao.cursor()
+    try:
+        id = int(input("Digite o ID do livro que deseja ver: "))
+    except ValueError:
+        print("erro ao procurar o ID do livro")
+        return
+
+    try:
+        cursor.execute("""
+        UPDATE livros
+        SET disponivel = CASE disponivel
+        WHEN "sim" THEN "não"
+        WHEN "não" THEN "sim"
+        Else "sim"
+        END 
+        WHERE id = ?
+       """,
+       (id,)
+       )
+        conexao.commit()
+    except Exception as erro:
+        print(f"Ocorreu um erro ao atualizar o livro {erro}")
+    finally:
+        if conexao:
+            conexao.close()
