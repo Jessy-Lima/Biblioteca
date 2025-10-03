@@ -21,9 +21,9 @@ def adicionar_livro(titulo, autor, ano):
 
         cursor.execute("""
         INSERT INTO livros (titulo, autor, ano)
-        VALUES (?, ?, ?)
+        VALUES (?, ?, ?, ?)
         """,
-        (titulo, autor, ano)
+        (titulo, autor, ano, "sim")
         )
         conexao.commit()
         if cursor.rowcount > 0:
@@ -36,3 +36,18 @@ def adicionar_livro(titulo, autor, ano):
     finally:
         if conexao:
             conexao.close()
+
+def listar_livros():
+    try:
+        conexao = sqlite3.connect("biblioteca.db")
+        cursor = conexao.cursor()
+
+        cursor.execute("SELECT * FROM livros")
+        for linha in cursor.fetchall():
+            print(f"ID {linha[0]} | TÍTULO: {linha[1]} | AUTOR: {linha[2]} | ANO: {linha[3]} | DISPONIBILIDADE {linha[4]}")
+    except Exception as erro:
+        print(f"Erro ao tentar listar os livros da  {erro}")
+    finally:
+        if conexao:
+            conexao.close()
+
